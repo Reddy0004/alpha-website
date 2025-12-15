@@ -13,20 +13,20 @@ export function FounderSection() {
     offset: ["start end", "end start"],
   });
 
-  // Parallax effects for text and image
-  const textY = useTransform(scrollYProgress, [0, 1], [100, 0]);
-  const textOpacity = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0, 0.5, 1, 1]);
+  // More visible parallax effects
+  const textY = useTransform(scrollYProgress, [0, 1], [0, -200]);
+  const textOpacity = useTransform(scrollYProgress, [0, 0.6, 1], [1, 1, 0]);
   
-  const imageY = useTransform(scrollYProgress, [0, 1], [150, 0]);
-  const imageOpacity = useTransform(scrollYProgress, [0, 0.2, 0.5, 1], [0, 0.3, 1, 1]);
-  const imageScale = useTransform(scrollYProgress, [0, 0.5, 1], [0.8, 1, 1]);
+  const imageY = useTransform(scrollYProgress, [0, 1], [0, -300]);
+  const imageOpacity = useTransform(scrollYProgress, [0, 0.7, 1], [1, 1, 0]);
+  const imageScale = useTransform(scrollYProgress, [0, 1], [1, 0.7]);
 
   return (
     <section 
       ref={sectionRef}
-      className="min-h-screen w-full flex items-center justify-center bg-white py-20 px-4 md:px-8 lg:px-16"
+      className="min-h-screen w-full flex items-center justify-center bg-white py-10 px-4 md:px-8 lg:px-16"
     >
-      <div className="max-w-7xl w-full grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+      <div className="max-w-7xl w-full grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-14 items-center">
         {/* Left Section - Text Content */}
         <motion.div 
           className="flex flex-col space-y-6"
