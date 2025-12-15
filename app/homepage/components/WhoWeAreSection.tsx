@@ -1,10 +1,13 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
+import gsap from "gsap";
 import { motion, useScroll, useTransform } from "framer-motion";
 
 export function WhoWeAreSection() {
   const sectionRef = useRef<HTMLElement>(null);
+  const leftRef = useRef<HTMLDivElement>(null);
+  const rightRef = useRef<HTMLDivElement>(null);
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -20,6 +23,25 @@ export function WhoWeAreSection() {
   const rightOpacity = useTransform(scrollYProgress, [0, 0.25, 0.5, 1], [0, 0.4, 1, 1]);
   const rightScale = useTransform(scrollYProgress, [0, 0.5, 1], [0.75, 1, 1]);
 
+  useEffect(() => {
+    const tl = gsap.timeline({ defaults: { ease: "power2.out" } });
+    if (leftRef.current) {
+      tl.fromTo(
+        leftRef.current,
+        { opacity: 0, y: 40 },
+        { opacity: 1, y: 0, duration: 0.8 }
+      );
+    }
+    if (rightRef.current) {
+      tl.fromTo(
+        rightRef.current,
+        { opacity: 0, y: 50, scale: 0.95 },
+        { opacity: 1, y: 0, scale: 1, duration: 0.9 },
+        "-=0.4"
+      );
+    }
+  }, []);
+
   const alphaItems = [
     { letter: "A", text: "Authentic Relationships" },
     { letter: "L", text: "Legacy & Influence" },
@@ -29,13 +51,14 @@ export function WhoWeAreSection() {
   ];
 
   return (
-    <section 
+    <section
       ref={sectionRef}
       className="w-full min-h-[70vh] bg-[#FAFAFA] py-16 px-4 md:px-8 lg:px-16"
     >
       <div className="max-w-7xl w-full mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10 items-start">
         {/* Left Section - Who We Are */}
-        <motion.div 
+        <motion.div
+          ref={leftRef}
           className="flex flex-col space-y-3"
           style={{ y: leftY, opacity: leftOpacity, scale: leftScale }}
         >
@@ -43,21 +66,22 @@ export function WhoWeAreSection() {
             Who We Are
           </h2>
           <p className="text-base md:text-lg text-gray-900 leading-relaxed font-sans">
-            A Global Collective of Leaders and Legacy Builders. The Alpha Circle connects 
-            high-impact individuals from family businesses, emerging ventures, and top 
+            A Global Collective of Leaders and Legacy Builders. The Alpha Circle connects
+            high-impact individuals from family businesses, emerging ventures, and top
             industrial circles — across sectors and borders.
           </p>
         </motion.div>
 
         {/* Right Section - The Alpha Advantage */}
-        <motion.div 
+        <motion.div
+          ref={rightRef}
           className="flex flex-col space-y-2"
           style={{ y: rightY, opacity: rightOpacity, scale: rightScale }}
         >
           <h3 className="text-2xl md:text-3xl font-sans font-bold text-gray-900 mb-2">
             The Alpha Advantage
           </h3>
-          
+
           <div className="flex flex-col space-y-1.5">
             {alphaItems.map((item, index) => (
               <motion.div

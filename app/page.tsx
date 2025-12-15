@@ -1,6 +1,8 @@
 import { DirectionAwareHoverDemo } from "./homepage/components/DirectionAwareHoverDemo";
 import { FounderSection } from "./homepage/components/FounderSection";
 import { WhoWeAreSection } from "./homepage/components/WhoWeAreSection";
+import { AlphaCircleMaskSection } from "./homepage/components/AlphaCircleMaskSection";
+import { AlphaAdvantageMarquee } from "./homepage/components/AlphaAdvantageMarquee";
 
 export default function Home() {
   return (
@@ -8,6 +10,8 @@ export default function Home() {
       <DirectionAwareHoverDemo />
       <FounderSection />
       <WhoWeAreSection />
+      <AlphaCircleMaskSection />
+      <AlphaAdvantageMarquee />
     </main>
   );
 }
