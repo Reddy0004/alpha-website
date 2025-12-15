@@ -1,12 +1,26 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { useState, useEffect, useRef } from "react";
+import { AnimatePresence, motion, useScroll, useTransform } from "framer-motion";
 import { DirectionAwareHover } from "@/components/ui/direction-aware-hover";
 
 export function DirectionAwareHoverDemo() {
   const [currentImage, setCurrentImage] = useState(0);
   const images = ["/hero-1.JPG", "/hero-2.JPG"];
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end start"],
+  });
+
+  // Parallax effect for background image
+  const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
+  const opacity = useTransform(scrollYProgress, [0, 0.5, 1], [1, 0.8, 0]);
+  
+  // Parallax effect for text (moves slower)
+  const textY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
+  const textOpacity = useTransform(scrollYProgress, [0, 0.3, 0.7], [1, 1, 0]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -17,7 +31,7 @@ export function DirectionAwareHoverDemo() {
   }, [images.length]);
 
   return (
-    <div className="h-screen w-screen relative overflow-hidden">
+    <div ref={containerRef} className="h-screen w-screen relative overflow-hidden">
       <AnimatePresence mode="wait">
         <motion.div
           key={currentImage}
@@ -26,20 +40,24 @@ export function DirectionAwareHoverDemo() {
           exit={{ opacity: 0, scale: 0.95 }}
           transition={{ duration: 1.2, ease: "easeInOut" }}
           className="absolute inset-0"
+          style={{ y, opacity }}
         >
           <DirectionAwareHover
             imageUrl={images[currentImage]}
             className="h-full w-full rounded-none"
             childrenClassName="text-white"
           >
-            <div className="flex flex-col">
+            <motion.div 
+              className="flex flex-col"
+              style={{ y: textY, opacity: textOpacity }}
+            >
               <p className="font-bold text-4xl md:text-6xl leading-tight">
                 GLOBAL GROUND FOR
               </p>
               <p className="font-bold text-4xl md:text-6xl leading-tight">
                 VISIONARY MINDS
               </p>
-            </div>
+            </motion.div>
           </DirectionAwareHover>
         </motion.div>
       </AnimatePresence>
