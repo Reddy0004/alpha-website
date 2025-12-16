@@ -7,6 +7,7 @@ export function WhoWeAreSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const [openIndex, setOpenIndex] = useState<number | null>(0);
   const [hasScrollLocked, setHasScrollLocked] = useState(false);
+  const [autoOpenUntil, setAutoOpenUntil] = useState<number>(-1);
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -22,39 +23,83 @@ export function WhoWeAreSection() {
   const rightOpacity = useTransform(scrollYProgress, [0, 0.25, 0.5, 1], [0, 0.4, 1, 1]);
   const rightScale = useTransform(scrollYProgress, [0, 0.5, 1], [0.75, 1, 1]);
 
-  // Scroll lock: when this section comes fully into view, briefly lock scroll
-  // to let the content animate in, then smoothly scroll to the next section.
+  // Scroll lock + scroll-controlled auto-open:
+  // When this section is mostly in view, lock body scroll and
+  // use the user's scroll wheel to step through each dropdown.
+  // After all are open, unlock scroll and move to the next section.
   useEffect(() => {
     const sectionEl = sectionRef.current;
     if (!sectionEl || hasScrollLocked) return;
 
+    let previousOverflow = document.body.style.overflow;
+    let wheelAttached = false;
+    let completed = false;
+
+    const handleWheel = (event: WheelEvent) => {
+      if (!sectionRef.current) return;
+      if (event.deltaY === 0) return;
+
+      // While locked, prevent page scroll
+      event.preventDefault();
+
+      // Scroll down: open next
+      if (event.deltaY > 0) {
+        setAutoOpenUntil((prev) => {
+          const total = alphaItems.length;
+          if (prev < total - 1) {
+            return prev + 1;
+          }
+
+          // All open, allow transition to next section once
+          if (!completed) {
+            completed = true;
+            const nextSection = sectionEl.nextElementSibling as HTMLElement | null;
+            document.body.style.overflow = previousOverflow;
+            if (wheelAttached) {
+              window.removeEventListener("wheel", handleWheel);
+              wheelAttached = false;
+            }
+            if (nextSection) {
+              nextSection.scrollIntoView({ behavior: "smooth", block: "start" });
+            }
+          }
+          return prev;
+        });
+      } else if (event.deltaY < 0) {
+        // Scroll up: optionally allow closing steps, but don't go below 0
+        setAutoOpenUntil((prev) => Math.max(0, prev - 1));
+      }
+    };
+
     const observer = new IntersectionObserver(
       (entries) => {
         const entry = entries[0];
-        if (!entry.isIntersecting || entry.intersectionRatio < 0.9) return;
+        if (!entry.isIntersecting || entry.intersectionRatio < 0.85) return;
 
         setHasScrollLocked(true);
-
-        const previousOverflow = document.body.style.overflow;
+        previousOverflow = document.body.style.overflow;
         document.body.style.overflow = "hidden";
 
-        const nextSection = sectionEl.nextElementSibling as HTMLElement | null;
+        // Start with first item open
+        setAutoOpenUntil(0);
 
-        // Allow the internal drop-down / fade-in animations to play
-        setTimeout(() => {
-          if (nextSection) {
-            nextSection.scrollIntoView({ behavior: "smooth", block: "start" });
-          }
-          document.body.style.overflow = previousOverflow;
-        }, 1400);
+        window.addEventListener("wheel", handleWheel, { passive: false });
+        wheelAttached = true;
       },
       {
-        threshold: 0.9,
+        threshold: 0.85,
       }
     );
 
     observer.observe(sectionEl);
-    return () => observer.disconnect();
+
+    return () => {
+      observer.disconnect();
+      if (wheelAttached) {
+        window.removeEventListener("wheel", handleWheel);
+      }
+      document.body.style.overflow = previousOverflow;
+    };
   }, [hasScrollLocked]);
 
   const alphaItems = [
@@ -121,42 +166,46 @@ export function WhoWeAreSection() {
           </h3>
 
           <div className="flex flex-col space-y-1.5">
-            {alphaItems.map((item, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, x: 20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true, margin: "-50px" }}
-                transition={{ duration: 0.4, delay: index * 0.08 }}
-                className="bg-gray-100 rounded-lg px-2.5 py-2 md:px-3 md:py-2.5 hover:bg-gray-200 transition-colors duration-300 cursor-pointer"
-                onClick={() =>
-                  setOpenIndex((current) => (current === index ? null : index))
-                }
-              >
-                <div className="flex items-center gap-3">
-                  <span className="text-gray-900 font-bold text-base">
-                    {openIndex === index ? "▼" : "►"}
-                  </span>
-                  <span className="text-gray-900 font-semibold text-sm md:text-base">
-                    <span className="font-bold">{item.letter}</span> - {item.title}
-                  </span>
-                </div>
-                <AnimatePresence initial={false}>
-                  {openIndex === index && (
-                    <motion.p
-                      key="content"
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: "auto", opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.25 }}
-                      className="mt-2 pl-7 pr-1 text-xs md:text-sm text-gray-700 leading-relaxed overflow-hidden"
-                    >
-                      {item.description}
-                    </motion.p>
-                  )}
-                </AnimatePresence>
-              </motion.div>
-            ))}
+            {alphaItems.map((item, index) => {
+              const isOpen = index <= autoOpenUntil || openIndex === index;
+
+              return (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, x: 20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true, margin: "-50px" }}
+                  transition={{ duration: 0.4, delay: index * 0.08 }}
+                  className="bg-gray-100 rounded-lg px-2.5 py-2 md:px-3 md:py-2.5 hover:bg-gray-200 transition-colors duration-300 cursor-pointer"
+                  onClick={() =>
+                    setOpenIndex((current) => (current === index ? null : index))
+                  }
+                >
+                  <div className="flex items-center gap-3">
+                    <span className="text-gray-900 font-bold text-base">
+                      {isOpen ? "▼" : "►"}
+                    </span>
+                    <span className="text-gray-900 font-semibold text-sm md:text-base">
+                      <span className="font-bold">{item.letter}</span> - {item.title}
+                    </span>
+                  </div>
+                  <AnimatePresence initial={false}>
+                    {isOpen && (
+                      <motion.p
+                        key="content"
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.25 }}
+                        className="mt-2 pl-7 pr-1 text-xs md:text-sm text-gray-700 leading-relaxed overflow-hidden"
+                      >
+                        {item.description}
+                      </motion.p>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
+              );
+            })}
           </div>
         </motion.div>
       </div>

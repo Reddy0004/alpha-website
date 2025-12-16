@@ -1,11 +1,16 @@
 "use client";
 
-import React, { useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
-import { CardBody, CardContainer, CardItem } from "@/components/ui/3d-card";
+import React, { useRef, useState, useEffect } from "react";
+import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
 
 export function FounderSection() {
-  const founderImageUrl = "/founder.JPG";
+  const images = [
+    "/founder.JPG",
+    "/0Z0A2192.png",
+    "/Alpha Circle-47.jpg",
+    "/Alpha Circle-67.jpg"
+  ];
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const sectionRef = useRef<HTMLElement>(null);
 
   const { scrollYProgress } = useScroll({
@@ -13,79 +18,113 @@ export function FounderSection() {
     offset: ["start end", "end start"],
   });
 
-  // Subtle parallax for text; keep image mostly fixed
-  const textY = useTransform(scrollYProgress, [0, 1], [0, -80]);
-  const textOpacity = useTransform(scrollYProgress, [0, 0.7, 1], [1, 1, 0.9]);
+  // Parallax effects
+  const textY = useTransform(scrollYProgress, [0, 1], [0, -60]);
+  const textOpacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
   
-  const imageY = useTransform(scrollYProgress, [0, 1], [0, -10]);
-  const imageOpacity = useTransform(scrollYProgress, [0, 1], [1, 1]);
-  const imageScale = useTransform(scrollYProgress, [0, 1], [1, 1]);
+  // Frame parallax (moves slightly slower than image for depth)
+  const frameY = useTransform(scrollYProgress, [0, 1], [20, -20]);
+
+  // Rotate through images automatically
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prev) => (prev + 1) % images.length);
+    }, 5000); // 5 seconds per slide
+
+    return () => clearInterval(interval);
+  }, [images.length]);
 
   return (
     <section 
       ref={sectionRef}
-      className="min-h-screen w-full flex items-center justify-center bg-white py-10 px-4 md:px-8 lg:px-16"
+      className="min-h-screen w-full flex items-center justify-center bg-white py-16 px-4 md:px-8 lg:px-16 overflow-hidden"
     >
-      <div className="max-w-7xl w-full grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-14 items-center">
-        {/* Left Section - Text Content */}
+      <div className="max-w-7xl w-full grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 items-center">
+        
+        {/* Left Section - Text Content (Spans 7 columns on tablet+) */}
         <motion.div 
-          className="flex flex-col space-y-6 -mt-8 lg:-mt-12"
+          className="md:col-span-7 flex flex-col space-y-8 relative z-10"
           style={{ y: textY, opacity: textOpacity }}
         >
-          {/* Small red heading */}
-          <h2 className="text-[#af2324] text-sm font-semibold tracking-wider uppercase">
-            THE ALPHA CIRCLE
-          </h2>
-
-          {/* Main title */}
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif text-gray-900 leading-tight">
-            Empowering Visionaries— Everywhere.
-          </h1>
-
-          {/* Description paragraphs */}
-          <div className="space-y-4 text-gray-700 leading-relaxed">
-            <p className="text-lg">
+          <div>
+            <h2 className="font-dm-serif text-[#af2324] text-sm font-bold tracking-[0.2em] uppercase mb-3 ml-1">
+              The Alpha Circle
+            </h2>
+            <h1 className="font-dm-serif text-5xl md:text-6xl lg:text-7xl text-gray-900 leading-[1.1]">
+              Empowering <br/>
+              <span className="italic text-gray-500">Visionaries</span> Everywhere.
+            </h1>
+          </div>
+          <div className="font-dm-serif space-y-6 text-gray-600 text-lg leading-relaxed max-w-2xl border-l-2 border-[#af2324]/20 pl-6">
+            <p>
               The Alpha Circle is an invite-only global industry leaders collective founded by Dr. Pulluri Srikanth. 
               We unite industrialists, business pioneers, and generational entrepreneurs who share a vision for 
-              transformative leadership and sustainable growth.
+              transformative leadership.
             </p>
-            <p className="text-lg">
+            <p>
               With a strong presence across India and our international launch in Dubai, The Alpha Circle serves 
               as a platform for collaboration, innovation, and meaningful impact across industries and borders.
             </p>
           </div>
-
-          {/* Founder attribution */}
-          <p className="text-[#af2324] text-base font-medium mt-8">
-            — Dr. Pulluri Srikanth<br />
-            <span className="text-[#af2324]">Founder, The Alpha Circle</span>
-          </p>
+          {/* Founder Signature Block */}
+          <div className="pt-4">
+            <p className="font-dm-serif text-gray-900 text-xl font-medium">
+              Dr. Pulluri Srikanth
+            </p>
+            <p className="font-dm-serif text-[#af2324] text-sm font-medium uppercase tracking-wide mt-1">
+              Founder, The Alpha Circle
+            </p>
+          </div>
         </motion.div>
 
-        {/* Right Section - 3D Card with Founder Image */}
-        <motion.div 
-          className="flex justify-center lg:justify-start -mt-12 lg:-mt-8 lg:ml-24"
-          style={{ y: imageY, opacity: imageOpacity, scale: imageScale }}
-        >
-          <CardContainer className="inter-var">
-            <CardBody className="bg-transparent relative group/card w-full max-w-sm md:max-w-md h-auto rounded-xl border-none">
-              <CardItem
-                translateZ="100"
-                className="w-full"
-              >
-                <img
-                  src={founderImageUrl}
-                  height="1000"
-                  width="1000"
-                  className="w-full h-auto max-h-[70vh] object-cover rounded-xl group-hover/card:shadow-xl"
+        {/* Right Section - Framed Image (Spans 5 columns on tablet+) */}
+        <div className="md:col-span-5 relative flex justify-center md:justify-end mt-12 md:mt-0">
+          
+          {/* THE FRAME CONTAINER */}
+          <div className="relative w-full max-w-md aspect-[3/4]">
+            
+            {/* 1. The Decorative Frame (Behind) */}
+            <motion.div 
+              style={{ y: frameY }}
+              className="absolute -right-4 -bottom-4 w-full h-full border-2 border-[#af2324] rounded-sm z-0 hidden md:block"
+            />
+            
+            {/* 2. The Solid Background Block (For contrast) */}
+            <div className="absolute -left-4 -top-4 w-full h-full bg-gray-50 rounded-sm -z-10 hidden md:block" />
+            
+            {/* 3. The Image Mask/Container */}
+            <div className="relative w-full h-full overflow-hidden rounded-sm shadow-2xl bg-gray-200 z-10">
+              <AnimatePresence mode="popLayout">
+                <motion.img
+                  key={currentImageIndex}
+                  src={images[currentImageIndex]}
                   alt="Dr. Pulluri Srikanth - Founder, The Alpha Circle"
+                  className="absolute inset-0 w-full h-full object-cover"
+                  
+                  // ANIMATION: Ken Burns Effect (Fade + Scale)
+                  initial={{ opacity: 0, scale: 1.15 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 1 }} // Scale stays 1 on exit to prevent "zooming back"
+                  
+                  transition={{ 
+                    opacity: { duration: 1.2, ease: "easeInOut" },
+                    scale: { duration: 6, ease: "linear" } // Very slow zoom
+                  }}
                 />
-              </CardItem>
-            </CardBody>
-          </CardContainer>
-        </motion.div>
+              </AnimatePresence>
+              {/* Optional: subtle gradient overlay for text readability if needed */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
+            </div>
+            
+            {/* 4. Decorative Corner Element */}
+            <div className="absolute -bottom-8 -left-8 w-24 h-24 bg-[#af2324] hidden md:flex items-center justify-center text-white p-4 shadow-lg z-20">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 19.5L19.5 4.5M19.5 4.5H8.25m11.25 0v11.25" />
+              </svg>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );
 }
-

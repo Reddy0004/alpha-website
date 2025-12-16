@@ -10,6 +10,7 @@ const config: Config = {
     extend: {
       fontFamily: {
         'bodoni': ['Bodoni Moda', 'serif'],
+        'dm-serif': ['DM Serif Display', 'serif'],
       },
     },
   },

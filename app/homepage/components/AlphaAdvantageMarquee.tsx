@@ -139,7 +139,7 @@ export function AlphaAdvantageMarquee() {
           <div className="w-full max-w-3xl overflow-hidden rounded-xl border border-neutral-200 shadow-sm bg-white">
             <iframe
               src="https://www.instagram.com/reel/DIBx9-fSoIv/embed"
-              allowTransparency
+              allowtransparency="true"
               allow="encrypted-media; clipboard-write"
               scrolling="no"
               className="w-full h-[700px]"
