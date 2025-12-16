@@ -12,6 +12,9 @@ const config: Config = {
         'bodoni': ['Bodoni Moda', 'serif'],
         'dm-serif': ['DM Serif Display', 'serif'],
       },
+      colors: {
+        brand: "#af2324",
+      },
     },
   },
   plugins: [],

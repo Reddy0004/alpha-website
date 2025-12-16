@@ -36,8 +36,9 @@ export function FounderSection() {
 
   return (
     <section 
+      id="founder"
       ref={sectionRef}
-      className="min-h-screen w-full flex items-center justify-center bg-white py-16 px-4 md:px-8 lg:px-16 overflow-hidden"
+      className="min-h-screen w-full flex items-center justify-center bg-white py-10 px-4 md:px-8 lg:px-16 scroll-mt-24"
     >
       <div className="max-w-7xl w-full grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 items-center">
         
