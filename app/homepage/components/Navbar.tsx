@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const navLinks = [
   { label: "Home", href: "/" },
@@ -17,7 +17,7 @@ export function Navbar() {
   const [open, setOpen] = useState(false);
   const [hidden, setHidden] = useState(false);
   const [atTop, setAtTop] = useState(true);
-  const [lastScrollY, setLastScrollY] = useState(0);
+  const lastScrollY = useRef(0);
 
   const toggleMenu = () => setOpen((prev) => !prev);
   const closeMenu = () => setOpen(false);
@@ -27,35 +27,37 @@ export function Navbar() {
 
     const handleScroll = () => {
       const current = window.scrollY;
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          setAtTop(current < 8);
+      if (ticking) return;
+      ticking = true;
 
-          if (!open) {
-            const scrollingDown = current > lastScrollY;
-            const scrollingUp = current < lastScrollY;
-            const pastThreshold = current > 80;
-            
-            // Always show at top, show when scrolling up, hide when scrolling down (past threshold)
-            if (current < 80) {
-              setHidden(false);
-            } else if (scrollingUp) {
-              setHidden(false);
-            } else if (scrollingDown && pastThreshold) {
-              setHidden(true);
-            }
+      window.requestAnimationFrame(() => {
+        setAtTop(current < 8);
+
+        if (open) {
+          setHidden(false);
+        } else {
+          const prev = lastScrollY.current;
+          const scrollingDown = current > prev + 2;
+          const scrollingUp = current < prev - 2;
+          const pastThreshold = current > 80;
+
+          if (current < 80) {
+            setHidden(false);
+          } else if (scrollingUp) {
+            setHidden(false);
+          } else if (scrollingDown && pastThreshold) {
+            setHidden(true);
           }
+        }
 
-          setLastScrollY(current);
-          ticking = false;
-        });
-        ticking = true;
-      }
+        lastScrollY.current = current;
+        ticking = false;
+      });
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [lastScrollY, open]);
+  }, [open]);
 
   return (
     <header

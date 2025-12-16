@@ -4,24 +4,15 @@ import { ParallaxScroll } from "@/components/ui/parallax-scroll";
 import { cn } from "@/lib/utils";
 
 const images = [
-  "/gallery%20/0Z0A3048.JPG",
-  "/gallery%20/0Z0A2863.JPG",
-  "/gallery%20/0Z0A2192.png",
-  "/gallery%20/0Z0A2070.JPG",
-  "/gallery%20/0K6A8206.JPG",
-  "/gallery%20/0B4A0588.JPG",
-  "/gallery%20/0B4A0565.JPG",
-  "/gallery%20/0B4A0365.JPG",
-  "/gallery%20/0B4A0194.JPG",
-  "/gallery%20/0Z0A3048.JPG",
-  "/gallery%20/0Z0A2863.JPG",
-  "/gallery%20/0Z0A2192.png",
-  "/gallery%20/0Z0A2070.JPG",
-  "/gallery%20/0K6A8206.JPG",
-  "/gallery%20/0B4A0588.JPG",
-  "/gallery%20/0B4A0565.JPG",
-  "/gallery%20/0B4A0365.JPG",
-  "/gallery%20/0B4A0194.JPG",
+  "/gallery/0Z0A3048.JPG",
+  "/gallery/0Z0A2863.JPG",
+  "/gallery/0Z0A2192.png",
+  "/gallery/0Z0A2070.JPG",
+  "/gallery/0K6A8206.JPG",
+  "/gallery/0B4A0588.JPG",
+  "/gallery/0B4A0565.JPG",
+  "/gallery/0B4A0365.JPG",
+  "/gallery/0B4A0194.JPG",
 ];
 
 export function GalleryParallax({ className }: { className?: string }) {
