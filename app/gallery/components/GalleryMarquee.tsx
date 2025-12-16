@@ -3,10 +3,6 @@
 import { ThreeDMarquee } from "@/components/ui/3d-marquee";
 
 const marqueeImages = [
-  "/gallery/DSC01118.JPG",
-  "/gallery/8K6A1522.JPG",
-  "/gallery/0Z0A3082.JPG",
-  "/gallery/0Z0A2873.JPG",
   "/gallery/0Z0A2863.JPG",
   "/gallery/0Z0A2070.JPG",
   "/gallery/0Z0A3048.JPG",
@@ -16,8 +12,6 @@ const marqueeImages = [
   "/gallery/0B4A0565.JPG",
   "/gallery/0B4A0365.JPG",
   "/gallery/0B4A0194.JPG",
-  "/gallery/gallery-1.JPG",
-  "/gallery/gallery-2.jpg",
 ];
 
 export function GalleryMarquee() {
