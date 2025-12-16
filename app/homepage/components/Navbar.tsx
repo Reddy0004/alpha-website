@@ -33,8 +33,17 @@ export function Navbar() {
 
           if (!open) {
             const scrollingDown = current > lastScrollY;
+            const scrollingUp = current < lastScrollY;
             const pastThreshold = current > 80;
-            setHidden(scrollingDown && pastThreshold);
+            
+            // Always show at top, show when scrolling up, hide when scrolling down (past threshold)
+            if (current < 80) {
+              setHidden(false);
+            } else if (scrollingUp) {
+              setHidden(false);
+            } else if (scrollingDown && pastThreshold) {
+              setHidden(true);
+            }
           }
 
           setLastScrollY(current);
