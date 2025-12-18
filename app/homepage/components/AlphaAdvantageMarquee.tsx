@@ -4,6 +4,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { ParallaxSection } from "./ParallaxSection";
 import dynamic from "next/dynamic";
+import { InstagramFeed } from "./InstagramFeed";
 
 type Difference = {
   id: string;
@@ -159,7 +160,7 @@ export function AlphaAdvantageMarquee() {
           <div className="pointer-events-none absolute inset-y-0 right-0 w-1/4 bg-gradient-to-l from-white to-transparent" />
         </div>
 
-        {/* Instagram reel and 3D Model side by side */}
+        {/* Instagram feed and 3D Model side by side */}
         <motion.div 
           className="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-8 items-center"
           initial={{ opacity: 0, y: 40, scale: 0.95 }}
@@ -167,16 +168,8 @@ export function AlphaAdvantageMarquee() {
           viewport={{ once: true, margin: "-50px" }}
           transition={{ duration: 0.6, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
         >
-          {/* Instagram reel - Left */}
-          <div className="w-full overflow-hidden rounded-xl border border-neutral-200 shadow-sm bg-white">
-            <iframe
-              src="https://www.instagram.com/reel/DIBx9-fSoIv/embed"
-              allowTransparency={true}
-              allow="encrypted-media; clipboard-write"
-              scrolling="no"
-              className="w-full h-[700px]"
-            />
-          </div>
+          {/* Instagram Feed - Left */}
+          <InstagramFeed />
 
           {/* 3D Model - Right */}
           <motion.div 

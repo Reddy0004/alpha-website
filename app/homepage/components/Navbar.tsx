@@ -13,7 +13,7 @@ export function Navbar() {
     },
     {
       name: "About Us",
-      link: "/#about",
+      link: "/about-us",
       icon: <IconUsers className="h-4 w-4 text-neutral-500 dark:text-white" />,
     },
     {

@@ -5,6 +5,8 @@ import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion"
 
 export function FounderSection() {
   const images = [
+    "/xAlpha-Circle-World-Founder.jpg",
+    "/Dr.-Pulluri-Srikanth-Founder.jpg",
     "/founder.JPG",
     "/0Z0A2192.png",
     "/Alpha Circle-47.jpg",
@@ -90,10 +92,10 @@ export function FounderSection() {
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.3 }}
           >
-            <p className="font-dm-serif text-gray-900 text-xl font-normal">
+            <p className="font-dm-serif text-gray-900 text-4xl md:text-5xl lg:text-6xl font-normal">
               Dr. Pulluri Srikanth
             </p>
-            <p className="font-dm-serif text-[#af2324] text-sm font-normal uppercase tracking-wide mt-1">
+            <p className="font-dm-serif text-[#af2324] text-lg md:text-xl lg:text-2xl font-normal uppercase tracking-wide mt-2 md:mt-3">
               FOUNDER, THE ALPHA CIRCLE
             </p>
           </motion.div>

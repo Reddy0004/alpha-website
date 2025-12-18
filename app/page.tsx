@@ -1,3 +1,4 @@
+import AlphaHeroSection from "./about-us/components/AlphaHeroSection";
 import { DirectionAwareHoverDemo } from "./homepage/components/DirectionAwareHoverDemo";
 import { FounderSection } from "./homepage/components/FounderSection";
 import { WhoWeAreSection } from "./homepage/components/WhoWeAreSection";
@@ -11,7 +12,8 @@ import { ContactSection } from "./homepage/components/ContactSection";
 
 export default function Home() {
   return (
-    <main className="p-0 m-0 overflow-hidden bg-black">
+    <main className="p-0 m-0 overflow-x-hidden bg-black">
+      <AlphaHeroSection />
       <DirectionAwareHoverDemo />
       <FounderSection />
       <WhoWeAreSection />

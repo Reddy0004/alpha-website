@@ -11,6 +11,7 @@ const config: Config = {
       fontFamily: {
         'bodoni': ['Bodoni Moda', 'serif'],
         'dm-serif': ['DM Serif Display', 'serif'],
+        'poppins': ['Poppins', 'sans-serif'],
       },
       colors: {
         brand: "#af2324",
