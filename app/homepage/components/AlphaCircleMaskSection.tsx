@@ -41,7 +41,6 @@ export function AlphaCircleMaskSection() {
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
         animate={{ backgroundColor: hovered ? "#000000" : "#ffffff" }}
-        transition={{ duration: 0.35, ease: "easeInOut" }}
         className="relative w-full overflow-hidden rounded-xl border bg-white py-16"
         style={{ minHeight: "40rem" }}
         initial={{ opacity: 0, y: 40 }}
